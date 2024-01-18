@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import snowflake.connector
 
+
 streamlit.title('My Parents New Healthy Dinner')
 
 streamlit.header('Breakfast Menu')
@@ -27,6 +28,13 @@ fruit_choice = streamlit.text_input('What fruit would you like information about
 streamlit.write('The user entered', fruit_choice)
 
 fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
+
+my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+my_cur = my_cnx.cursor()
+my_cur.execute("SELECT CURRENT_USER(), CURRENT_ACCOUNT(), CURRENT_REGION()")
+my_data_row = my_cur.fetchone()
+streamlit.text("Hello from Snowflake:")
+streamlit.text(my_data_row)
 # write your own comment -what does the next line do? 
 fruityvice_normalized = pd.json_normalize(fruityvice_response.json())
 # write your own comment - what does this do?
